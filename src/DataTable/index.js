@@ -20,6 +20,7 @@ export default function DataTable() {
           name: studentData[key].name,
           regNo: studentData[key].regNo,
           totalMark: studentData[key].totalMark,
+          status: studentData[key].status,
         }));
         setData(studentData);
       }
@@ -52,6 +53,10 @@ export default function DataTable() {
 
   const cancel = () => {
     setEditingKey("");
+  };
+
+  const handlePromoteSuspend = (record, status) => {
+    firebaseDb.child(`student/${record.key}`).update({ status: status });
   };
 
   const save = async (key) => {
@@ -91,7 +96,15 @@ export default function DataTable() {
     deleteFirebaseDb(selectedRow);
   };
 
-  const columns = ColumnFields({ ColumnSearch, isEditing, editingKey, save, cancel, edit });
+  const columns = ColumnFields({
+    ColumnSearch,
+    isEditing,
+    editingKey,
+    save,
+    cancel,
+    edit,
+    handlePromoteSuspend,
+  });
 
   const mergedColumns = columns.map((col) => {
     if (!col.editable) {

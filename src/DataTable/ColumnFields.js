@@ -1,9 +1,16 @@
 import React from "react";
-import { Button, Popconfirm, Tag, Divider } from "antd";
-import { EditOutlined } from "@ant-design/icons";
-// import { Tag, Divider } from 'antd';
+import { Button, Popconfirm, Tag, Row, Col } from "antd";
+import { DownCircleOutlined, EditOutlined, UpCircleOutlined } from "@ant-design/icons";
 
-export function ColumnFields({ ColumnSearch, isEditing, editingKey, save, cancel, edit }) {
+export function ColumnFields({
+  ColumnSearch,
+  isEditing,
+  editingKey,
+  save,
+  cancel,
+  edit,
+  handlePromoteSuspend,
+}) {
   return [
     {
       title: "Reg. no.",
@@ -14,7 +21,7 @@ export function ColumnFields({ ColumnSearch, isEditing, editingKey, save, cancel
     {
       title: "Name",
       dataIndex: "name",
-      width: "25%",
+      width: "20%",
       editable: true,
       ...ColumnSearch("name"),
     },
@@ -29,7 +36,40 @@ export function ColumnFields({ ColumnSearch, isEditing, editingKey, save, cancel
     {
       title: "Status",
       dataIndex: "status",
-      width: "20%",
+      width: "30%",
+      render: (_, record) => {
+        console.log(record);
+        return (
+          <>
+            <Row gutter={16}>
+              <Col span={14}>
+                {record.status && (
+                  <Tag
+                    color={
+                      (record.status === "PROMOTED" && "success") ||
+                      (record.status === "SUSPENDED" && "error")
+                    }
+                  >
+                    {record.status}
+                  </Tag>
+                )}
+              </Col>
+              <Col span={4}>
+                <UpCircleOutlined
+                  onClick={() => handlePromoteSuspend(record, "PROMOTED")}
+                  style={{ color: "#5CC41A", cursor: "pointer", fontSize: "20px" }}
+                />
+              </Col>
+              <Col span={4}>
+                <DownCircleOutlined
+                  onClick={() => handlePromoteSuspend(record, "SUSPENDED")}
+                  style={{ color: "#F6443F", cursor: "pointer", fontSize: "20px" }}
+                />
+              </Col>
+            </Row>
+          </>
+        );
+      },
       // editable: true,
       // ...ColumnSearch("totalMark"),
     },
@@ -40,13 +80,6 @@ export function ColumnFields({ ColumnSearch, isEditing, editingKey, save, cancel
         const editable = isEditing(record);
         return (
           <>
-            <Tag style={{ cursor: "pointer" }} onClick={() => console.log("Promote")} color="success">
-              Promote
-            </Tag>
-            <Tag style={{ cursor: "pointer" }} onClick={() => console.log("suspend")} color="error">
-              Suspend
-            </Tag>
-
             {editable ? (
               <span>
                 <Button
@@ -62,10 +95,6 @@ export function ColumnFields({ ColumnSearch, isEditing, editingKey, save, cancel
                 </Popconfirm>
               </span>
             ) : (
-              //   <Typography.Link disabled={editingKey !== ""} onClick={() => edit(record)}>
-              //     Edit
-              //   </Typography.Link>
-
               <EditOutlined
                 style={{ fontSize: "20px", color: "#08c" }}
                 disabled={editingKey !== ""}

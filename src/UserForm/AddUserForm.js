@@ -3,7 +3,7 @@ import { Col, Input, Row, Button } from "antd";
 import firebaseDb from "../Service/firebase";
 
 const AddUserForm = (props) => {
-  const initialFormState = { name: "", regNo: "", totalMark: "" };
+  const initialFormState = { name: "", regNo: "", totalMark: "", status: "" };
   const [user, setUser] = useState(initialFormState);
 
   const inputHandler = (event) => {
